@@ -3,20 +3,27 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Portfolio API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: portfolio
+    description: Portfolio public content
+  - name: contact
+    description: Contact form
+  - name: analytics
+    description: Analytics tracking
+  - name: admin
+    description: Admin panel operations
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +31,473 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /bio:
+    get:
+      operationId: getBio
+      tags: [portfolio]
+      summary: Get bio/about content
+      responses:
+        "200":
+          description: Bio content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Bio"
+
+  /skills:
+    get:
+      operationId: getSkills
+      tags: [portfolio]
+      summary: Get all skills
+      responses:
+        "200":
+          description: Skills list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Skill"
+
+  /projects:
+    get:
+      operationId: getProjects
+      tags: [portfolio]
+      summary: Get all projects
+      responses:
+        "200":
+          description: Projects list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+
+  /certifications:
+    get:
+      operationId: getCertifications
+      tags: [portfolio]
+      summary: Get all certifications
+      responses:
+        "200":
+          description: Certifications list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Certification"
+
+  /social:
+    get:
+      operationId: getSocial
+      tags: [portfolio]
+      summary: Get social links
+      responses:
+        "200":
+          description: Social links
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Social"
+
+  /analytics:
+    get:
+      operationId: getAnalytics
+      tags: [analytics]
+      summary: Get analytics stats
+      responses:
+        "200":
+          description: Analytics stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Analytics"
+
+  /analytics/pageview:
+    post:
+      operationId: trackPageView
+      tags: [analytics]
+      summary: Track a page view
+      responses:
+        "200":
+          description: Tracked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /analytics/cvdownload:
+    post:
+      operationId: trackCvDownload
+      tags: [analytics]
+      summary: Track a CV download
+      responses:
+        "200":
+          description: Tracked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /contact:
+    post:
+      operationId: submitContact
+      tags: [contact]
+      summary: Submit contact form
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactInput"
+      responses:
+        "200":
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/login:
+    post:
+      operationId: adminLogin
+      tags: [admin]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminLoginInput"
+      responses:
+        "200":
+          description: Login success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAuthResult"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/logout:
+    post:
+      operationId: adminLogout
+      tags: [admin]
+      summary: Admin logout
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/me:
+    get:
+      operationId: adminMe
+      tags: [admin]
+      summary: Check admin session
+      responses:
+        "200":
+          description: Session info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSession"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/messages:
+    get:
+      operationId: adminGetMessages
+      tags: [admin]
+      summary: Get all contact messages
+      responses:
+        "200":
+          description: Messages list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+
+  /admin/messages/{id}:
+    delete:
+      operationId: adminDeleteMessage
+      tags: [admin]
+      summary: Delete a message
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/messages/{id}/read:
+    patch:
+      operationId: adminMarkMessageRead
+      tags: [admin]
+      summary: Mark message as read
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Marked read
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/projects:
+    post:
+      operationId: adminCreateProject
+      tags: [admin]
+      summary: Create a project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+
+  /admin/projects/{id}:
+    put:
+      operationId: adminUpdateProject
+      tags: [admin]
+      summary: Update a project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+    delete:
+      operationId: adminDeleteProject
+      tags: [admin]
+      summary: Delete a project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/skills:
+    post:
+      operationId: adminCreateSkill
+      tags: [admin]
+      summary: Create a skill
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SkillInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Skill"
+
+  /admin/skills/{id}:
+    put:
+      operationId: adminUpdateSkill
+      tags: [admin]
+      summary: Update a skill
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SkillInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Skill"
+    delete:
+      operationId: adminDeleteSkill
+      tags: [admin]
+      summary: Delete a skill
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/certifications:
+    post:
+      operationId: adminCreateCertification
+      tags: [admin]
+      summary: Create a certification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CertificationInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Certification"
+
+  /admin/certifications/{id}:
+    put:
+      operationId: adminUpdateCertification
+      tags: [admin]
+      summary: Update a certification
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CertificationInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Certification"
+    delete:
+      operationId: adminDeleteCertification
+      tags: [admin]
+      summary: Delete a certification
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /admin/social:
+    put:
+      operationId: adminUpdateSocial
+      tags: [admin]
+      summary: Update social links
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SocialInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Social"
+
+  /admin/bio:
+    put:
+      operationId: adminUpdateBio
+      tags: [admin]
+      summary: Update bio
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BioInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Bio"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +508,360 @@ components:
       required:
         - status
 
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required:
+        - success
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    Bio:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        shortName:
+          type: string
+        tagline:
+          type: string
+        subtitle:
+          type: string
+        about:
+          type: string
+        location:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        availability:
+          type: string
+        university:
+          type: string
+        department:
+          type: string
+      required:
+        - id
+        - name
+        - shortName
+        - tagline
+        - subtitle
+        - about
+        - location
+        - email
+        - phone
+        - availability
+        - university
+        - department
+
+    BioInput:
+      type: object
+      properties:
+        tagline:
+          type: string
+        subtitle:
+          type: string
+        about:
+          type: string
+        availability:
+          type: string
+      required:
+        - tagline
+        - subtitle
+        - about
+        - availability
+
+    Skill:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        percentage:
+          type: integer
+        sortOrder:
+          type: integer
+      required:
+        - id
+        - name
+        - category
+        - percentage
+        - sortOrder
+
+    SkillInput:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        percentage:
+          type: integer
+        sortOrder:
+          type: integer
+      required:
+        - name
+        - category
+        - percentage
+        - sortOrder
+
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        techUsed:
+          type: string
+        liveUrl:
+          type: string
+          nullable: true
+        githubUrl:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [live, in_progress, coming_soon]
+        createdAt:
+          type: string
+      required:
+        - id
+        - title
+        - description
+        - techUsed
+        - liveUrl
+        - githubUrl
+        - status
+        - createdAt
+
+    ProjectInput:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        techUsed:
+          type: string
+        liveUrl:
+          type: string
+          nullable: true
+        githubUrl:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [live, in_progress, coming_soon]
+      required:
+        - title
+        - description
+        - techUsed
+        - status
+
+    Certification:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        organization:
+          type: string
+        date:
+          type: string
+        imageUrl:
+          type: string
+          nullable: true
+        verifyUrl:
+          type: string
+          nullable: true
+      required:
+        - id
+        - title
+        - organization
+        - date
+        - imageUrl
+        - verifyUrl
+
+    CertificationInput:
+      type: object
+      properties:
+        title:
+          type: string
+        organization:
+          type: string
+        date:
+          type: string
+        imageUrl:
+          type: string
+          nullable: true
+        verifyUrl:
+          type: string
+          nullable: true
+      required:
+        - title
+        - organization
+        - date
+
+    Social:
+      type: object
+      properties:
+        id:
+          type: integer
+        github:
+          type: string
+        linkedin:
+          type: string
+        youtube:
+          type: string
+        twitter:
+          type: string
+        facebook:
+          type: string
+        instagram:
+          type: string
+        whatsapp:
+          type: string
+      required:
+        - id
+        - github
+        - linkedin
+        - youtube
+        - twitter
+        - facebook
+        - instagram
+        - whatsapp
+
+    SocialInput:
+      type: object
+      properties:
+        github:
+          type: string
+        linkedin:
+          type: string
+        youtube:
+          type: string
+        twitter:
+          type: string
+        facebook:
+          type: string
+        instagram:
+          type: string
+        whatsapp:
+          type: string
+      required:
+        - github
+        - linkedin
+        - youtube
+        - twitter
+        - facebook
+        - instagram
+        - whatsapp
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        message:
+          type: string
+        isRead:
+          type: boolean
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - email
+        - message
+        - isRead
+        - createdAt
+
+    ContactInput:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        message:
+          type: string
+        honeypot:
+          type: string
+      required:
+        - name
+        - email
+        - message
+
+    Analytics:
+      type: object
+      properties:
+        pageViews:
+          type: integer
+        cvDownloads:
+          type: integer
+        totalMessages:
+          type: integer
+        unreadMessages:
+          type: integer
+      required:
+        - pageViews
+        - cvDownloads
+        - totalMessages
+        - unreadMessages
+
+    AdminLoginInput:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - password
+
+    AdminAuthResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        token:
+          type: string
+      required:
+        - success
+        - token
+
+    AdminSession:
+      type: object
+      properties:
+        authenticated:
+          type: boolean
+        username:
+          type: string
+      required:
+        - authenticated
+        - username
