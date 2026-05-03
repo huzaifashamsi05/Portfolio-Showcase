@@ -385,3 +385,63 @@ export const AdminUpdateBioResponse = zod.object({
   university: zod.string(),
   department: zod.string(),
 });
+
+/**
+ * @summary Get all testimonials
+ */
+export const GetTestimonialsResponseItem = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  role: zod.string(),
+  quote: zod.string(),
+  rating: zod.number(),
+  sortOrder: zod.number(),
+});
+export const GetTestimonialsResponse = zod.array(GetTestimonialsResponseItem);
+
+/**
+ * @summary Create a testimonial
+ */
+export const AdminCreateTestimonialBody = zod.object({
+  name: zod.string(),
+  role: zod.string(),
+  quote: zod.string(),
+  rating: zod.number(),
+  sortOrder: zod.number(),
+});
+
+/**
+ * @summary Update a testimonial
+ */
+export const AdminUpdateTestimonialParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const AdminUpdateTestimonialBody = zod.object({
+  name: zod.string(),
+  role: zod.string(),
+  quote: zod.string(),
+  rating: zod.number(),
+  sortOrder: zod.number(),
+});
+
+export const AdminUpdateTestimonialResponse = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  role: zod.string(),
+  quote: zod.string(),
+  rating: zod.number(),
+  sortOrder: zod.number(),
+});
+
+/**
+ * @summary Delete a testimonial
+ */
+export const AdminDeleteTestimonialParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const AdminDeleteTestimonialResponse = zod.object({
+  success: zod.boolean(),
+  message: zod.string().optional(),
+});

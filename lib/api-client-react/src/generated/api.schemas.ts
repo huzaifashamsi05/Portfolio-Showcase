@@ -167,3 +167,20 @@ export interface AdminSession {
   authenticated: boolean;
   username: string;
 }
+
+export interface Testimonial {
+  id: number;
+  name: string;
+  role: string;
+  quote: string;
+  rating: number;
+  sortOrder: number;
+}
+
+export interface TestimonialInput {
+  name: string;
+  role: string;
+  quote: string;
+  rating: number;
+  sortOrder: number;
+}

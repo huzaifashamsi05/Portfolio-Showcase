@@ -498,6 +498,82 @@ paths:
               schema:
                 $ref: "#/components/schemas/Bio"
 
+  /testimonials:
+    get:
+      operationId: getTestimonials
+      tags: [portfolio]
+      summary: Get all testimonials
+      responses:
+        "200":
+          description: Testimonials list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Testimonial"
+
+  /admin/testimonials:
+    post:
+      operationId: adminCreateTestimonial
+      tags: [admin]
+      summary: Create a testimonial
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestimonialInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Testimonial"
+
+  /admin/testimonials/{id}:
+    put:
+      operationId: adminUpdateTestimonial
+      tags: [admin]
+      summary: Update a testimonial
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestimonialInput"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Testimonial"
+    delete:
+      operationId: adminDeleteTestimonial
+      tags: [admin]
+      summary: Delete a testimonial
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -865,3 +941,46 @@ components:
       required:
         - authenticated
         - username
+
+    Testimonial:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        role:
+          type: string
+        quote:
+          type: string
+        rating:
+          type: integer
+        sortOrder:
+          type: integer
+      required:
+        - id
+        - name
+        - role
+        - quote
+        - rating
+        - sortOrder
+
+    TestimonialInput:
+      type: object
+      properties:
+        name:
+          type: string
+        role:
+          type: string
+        quote:
+          type: string
+        rating:
+          type: integer
+        sortOrder:
+          type: integer
+      required:
+        - name
+        - role
+        - quote
+        - rating
+        - sortOrder

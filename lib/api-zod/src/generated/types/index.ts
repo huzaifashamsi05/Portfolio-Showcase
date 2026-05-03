@@ -27,3 +27,5 @@ export * from "./skillInput";
 export * from "./social";
 export * from "./socialInput";
 export * from "./successResponse";
+export * from "./testimonial";
+export * from "./testimonialInput";

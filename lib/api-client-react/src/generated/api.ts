@@ -36,6 +36,8 @@ import type {
   Social,
   SocialInput,
   SuccessResponse,
+  Testimonial,
+  TestimonialInput,
 } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
@@ -2204,4 +2206,336 @@ export const useAdminUpdateBio = <
   TContext
 > => {
   return useMutation(getAdminUpdateBioMutationOptions(options));
+};
+
+/**
+ * @summary Get all testimonials
+ */
+export const getGetTestimonialsUrl = () => {
+  return `/api/testimonials`;
+};
+
+export const getTestimonials = async (
+  options?: RequestInit,
+): Promise<Testimonial[]> => {
+  return customFetch<Testimonial[]>(getGetTestimonialsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetTestimonialsQueryKey = () => {
+  return [`/api/testimonials`] as const;
+};
+
+export const getGetTestimonialsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getTestimonials>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getTestimonials>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetTestimonialsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getTestimonials>>> = ({
+    signal,
+  }) => getTestimonials({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getTestimonials>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetTestimonialsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getTestimonials>>
+>;
+export type GetTestimonialsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get all testimonials
+ */
+
+export function useGetTestimonials<
+  TData = Awaited<ReturnType<typeof getTestimonials>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getTestimonials>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetTestimonialsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Create a testimonial
+ */
+export const getAdminCreateTestimonialUrl = () => {
+  return `/api/admin/testimonials`;
+};
+
+export const adminCreateTestimonial = async (
+  testimonialInput: TestimonialInput,
+  options?: RequestInit,
+): Promise<Testimonial> => {
+  return customFetch<Testimonial>(getAdminCreateTestimonialUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(testimonialInput),
+  });
+};
+
+export const getAdminCreateTestimonialMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminCreateTestimonial>>,
+    TError,
+    { data: BodyType<TestimonialInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof adminCreateTestimonial>>,
+  TError,
+  { data: BodyType<TestimonialInput> },
+  TContext
+> => {
+  const mutationKey = ["adminCreateTestimonial"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof adminCreateTestimonial>>,
+    { data: BodyType<TestimonialInput> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return adminCreateTestimonial(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AdminCreateTestimonialMutationResult = NonNullable<
+  Awaited<ReturnType<typeof adminCreateTestimonial>>
+>;
+export type AdminCreateTestimonialMutationBody = BodyType<TestimonialInput>;
+export type AdminCreateTestimonialMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Create a testimonial
+ */
+export const useAdminCreateTestimonial = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminCreateTestimonial>>,
+    TError,
+    { data: BodyType<TestimonialInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof adminCreateTestimonial>>,
+  TError,
+  { data: BodyType<TestimonialInput> },
+  TContext
+> => {
+  return useMutation(getAdminCreateTestimonialMutationOptions(options));
+};
+
+/**
+ * @summary Update a testimonial
+ */
+export const getAdminUpdateTestimonialUrl = (id: number) => {
+  return `/api/admin/testimonials/${id}`;
+};
+
+export const adminUpdateTestimonial = async (
+  id: number,
+  testimonialInput: TestimonialInput,
+  options?: RequestInit,
+): Promise<Testimonial> => {
+  return customFetch<Testimonial>(getAdminUpdateTestimonialUrl(id), {
+    ...options,
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(testimonialInput),
+  });
+};
+
+export const getAdminUpdateTestimonialMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminUpdateTestimonial>>,
+    TError,
+    { id: number; data: BodyType<TestimonialInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof adminUpdateTestimonial>>,
+  TError,
+  { id: number; data: BodyType<TestimonialInput> },
+  TContext
+> => {
+  const mutationKey = ["adminUpdateTestimonial"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof adminUpdateTestimonial>>,
+    { id: number; data: BodyType<TestimonialInput> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return adminUpdateTestimonial(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AdminUpdateTestimonialMutationResult = NonNullable<
+  Awaited<ReturnType<typeof adminUpdateTestimonial>>
+>;
+export type AdminUpdateTestimonialMutationBody = BodyType<TestimonialInput>;
+export type AdminUpdateTestimonialMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Update a testimonial
+ */
+export const useAdminUpdateTestimonial = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminUpdateTestimonial>>,
+    TError,
+    { id: number; data: BodyType<TestimonialInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof adminUpdateTestimonial>>,
+  TError,
+  { id: number; data: BodyType<TestimonialInput> },
+  TContext
+> => {
+  return useMutation(getAdminUpdateTestimonialMutationOptions(options));
+};
+
+/**
+ * @summary Delete a testimonial
+ */
+export const getAdminDeleteTestimonialUrl = (id: number) => {
+  return `/api/admin/testimonials/${id}`;
+};
+
+export const adminDeleteTestimonial = async (
+  id: number,
+  options?: RequestInit,
+): Promise<SuccessResponse> => {
+  return customFetch<SuccessResponse>(getAdminDeleteTestimonialUrl(id), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getAdminDeleteTestimonialMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminDeleteTestimonial>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof adminDeleteTestimonial>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["adminDeleteTestimonial"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof adminDeleteTestimonial>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return adminDeleteTestimonial(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AdminDeleteTestimonialMutationResult = NonNullable<
+  Awaited<ReturnType<typeof adminDeleteTestimonial>>
+>;
+
+export type AdminDeleteTestimonialMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Delete a testimonial
+ */
+export const useAdminDeleteTestimonial = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof adminDeleteTestimonial>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof adminDeleteTestimonial>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  return useMutation(getAdminDeleteTestimonialMutationOptions(options));
 };

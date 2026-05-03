@@ -10,12 +10,13 @@ import {
   useGetSocial, useAdminUpdateSocial,
   useGetBio, useAdminUpdateBio,
   useGetAnalytics,
+  useGetTestimonials, useAdminCreateTestimonial, useAdminUpdateTestimonial, useAdminDeleteTestimonial,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { setToken, removeToken, getToken, getAuthHeaders } from "@/lib/auth";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
-type Section = "dashboard" | "messages" | "projects" | "skills" | "certifications" | "social" | "bio" | "analytics";
+type Section = "dashboard" | "messages" | "projects" | "skills" | "certifications" | "social" | "bio" | "analytics" | "testimonials";
 
 const SIDEBAR_ITEMS: { id: Section; label: string; icon: string }[] = [
   { id: "dashboard", label: "Dashboard", icon: "⊞" },
@@ -23,6 +24,7 @@ const SIDEBAR_ITEMS: { id: Section; label: string; icon: string }[] = [
   { id: "projects", label: "Projects", icon: "◈" },
   { id: "skills", label: "Skills", icon: "◎" },
   { id: "certifications", label: "Certifications", icon: "★" },
+  { id: "testimonials", label: "Testimonials", icon: "❝" },
   { id: "social", label: "Social Links", icon: "⊕" },
   { id: "bio", label: "Bio Editor", icon: "✎" },
   { id: "analytics", label: "Analytics", icon: "◉" },
@@ -458,6 +460,87 @@ function BioSection() {
   );
 }
 
+function TestimonialsSection() {
+  const { data: testimonials, refetch } = useGetTestimonials();
+  const createMutation = useAdminCreateTestimonial();
+  const updateMutation = useAdminUpdateTestimonial();
+  const deleteMutation = useAdminDeleteTestimonial();
+  const [editing, setEditing] = useState<number | null>(null);
+  const [form, setForm] = useState({ name: "", role: "", quote: "", rating: "5", sortOrder: "0" });
+
+  const resetForm = () => { setForm({ name: "", role: "", quote: "", rating: "5", sortOrder: "0" }); setEditing(null); };
+
+  const handleSave = async () => {
+    const data = { name: form.name, role: form.role, quote: form.quote, rating: Number(form.rating), sortOrder: Number(form.sortOrder) };
+    try {
+      if (editing !== null) {
+        await updateMutation.mutateAsync({ id: editing, data } as any);
+        toast.success("Testimonial updated");
+      } else {
+        await createMutation.mutateAsync({ data } as any);
+        toast.success("Testimonial added");
+      }
+      resetForm();
+      refetch();
+    } catch { toast.error("Failed to save"); }
+  };
+
+  const startEdit = (t: any) => {
+    setEditing(t.id);
+    setForm({ name: t.name, role: t.role, quote: t.quote, rating: String(t.rating), sortOrder: String(t.sortOrder) });
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm("Delete this testimonial?")) return;
+    try {
+      await deleteMutation.mutateAsync({ id } as any);
+      toast.success("Deleted");
+      refetch();
+    } catch { toast.error("Failed to delete"); }
+  };
+
+  return (
+    <div>
+      <h2 className="text-xl font-bold mb-6" style={{ fontFamily: "Orbitron, sans-serif", color: "#00f5ff" }}>Testimonials</h2>
+      <div className="p-5 rounded-xl mb-6" style={{ background: "#0d1426", border: "1px solid #1e293b" }}>
+        <h3 className="text-sm font-semibold mb-4" style={{ color: "#00f5ff" }}>{editing !== null ? "Edit" : "Add"} Testimonial</h3>
+        <AdminInput label="Name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} placeholder="e.g. Dr. Sarah Ahmed" />
+        <AdminInput label="Role / Position" value={form.role} onChange={(v) => setForm({ ...form, role: v })} placeholder="e.g. University Supervisor" />
+        <AdminTextarea label="Quote" value={form.quote} onChange={(v) => setForm({ ...form, quote: v })} rows={3} />
+        <AdminInput label="Rating (1–5)" value={form.rating} onChange={(v) => setForm({ ...form, rating: v })} type="number" />
+        <AdminInput label="Sort Order" value={form.sortOrder} onChange={(v) => setForm({ ...form, sortOrder: v })} type="number" />
+        <div className="flex gap-2">
+          <Btn onClick={handleSave}>{editing !== null ? "Update" : "Add"}</Btn>
+          {editing !== null && <Btn onClick={resetForm} variant="ghost">Cancel</Btn>}
+        </div>
+      </div>
+      <div className="space-y-3">
+        {testimonials?.map((t) => (
+          <div key={t.id} className="p-4 rounded-xl" style={{ background: "#0d1426", border: "1px solid #1e293b" }}>
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <div className="font-semibold text-sm">{t.name}</div>
+                <div className="text-xs mt-0.5" style={{ color: "#8b5cf6" }}>{t.role}</div>
+              </div>
+              <div className="flex gap-2 flex-shrink-0">
+                <Btn onClick={() => startEdit(t)} variant="ghost">Edit</Btn>
+                <Btn onClick={() => handleDelete(t.id)} variant="danger">Delete</Btn>
+              </div>
+            </div>
+            <p className="text-xs italic" style={{ color: "#64748b" }}>"{t.quote}"</p>
+            <div className="mt-2 flex gap-0.5">
+              {[1,2,3,4,5].map((s) => (
+                <span key={s} style={{ color: s <= t.rating ? "#f59e0b" : "#334155", fontSize: "0.75rem" }}>★</span>
+              ))}
+            </div>
+          </div>
+        ))}
+        {(!testimonials || testimonials.length === 0) && <p className="text-sm" style={{ color: "#475569" }}>No testimonials yet.</p>}
+      </div>
+    </div>
+  );
+}
+
 function AnalyticsSection() {
   const { data: analytics } = useGetAnalytics({ request: { headers: getAuthHeaders() } } as any);
   const chartData = [
@@ -594,6 +677,7 @@ export default function AdminPage() {
     projects: <ProjectsSection />,
     skills: <SkillsSection />,
     certifications: <CertificationsSection />,
+    testimonials: <TestimonialsSection />,
     social: <SocialSection />,
     bio: <BioSection />,
     analytics: <AnalyticsSection />,

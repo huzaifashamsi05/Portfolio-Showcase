@@ -1,0 +1,101 @@
+Fix these 2 critical issues and add missing features:
+
+══════════════════════════════════════
+ISSUE 1 — ADMIN PANEL NOT SAVING (TOP PRIORITY)
+══════════════════════════════════════
+
+When I edit bio, skills, or any content in admin 
+panel at /admin, changes do NOT show on the live 
+portfolio. Fix this completely:
+
+1. Check what database admin is saving to
+2. Make sure frontend fetches from SAME database
+3. On page load, portfolio must call these APIs:
+   GET /api/bio → load about text, tagline, availability
+   GET /api/skills → load skills with percentages  
+   GET /api/projects → load projects
+   GET /api/certifications → load certifications
+   GET /api/social → load social links
+4. Replace ALL hardcoded content with API data
+5. Test: change bio in admin → open portfolio in 
+   incognito tab → new bio must appear
+
+Do NOT stop until admin → portfolio sync works 100%
+
+══════════════════════════════════════
+ISSUE 2 — MAP FIX
+══════════════════════════════════════
+
+Map is not filling its container. Fix:
+- .map-container { width: 100%; height: 400px; }
+- #map { width: 100% !important; height: 100% !important; }
+- Call map.invalidateSize() after page load
+- Center on Karachi: coordinates 24.9833, 67.0667
+
+══════════════════════════════════════
+MISSING FEATURES — ADD ALL OF THESE
+══════════════════════════════════════
+
+1. TESTIMONIALS SECTION
+   - Add after Projects section
+   - 3 placeholder testimonial cards
+   - Name, role, quote, star rating
+   - Editable from admin panel
+
+2. BLOG/ARTICLES SECTION  
+   - Simple section showing "Coming Soon"
+   - Admin can add blog posts later
+
+3. GITHUB STATS WIDGET
+   - Show GitHub contribution graph
+   - Use: https://github-readme-stats.vercel.app/api?username=huzaifashamsi05
+   - Display as a card in Skills section
+
+4. TYPING SPEED / CODE COUNTER
+   - Fun animated counter showing:
+     * Lines of code written: 10,000+
+     * Projects completed: 5+
+     * Cups of coffee: 100+
+     * Hours of coding: 500+
+
+5. AVAILABILITY BANNER
+   - Small banner at very top of page
+   - "🟢 Available for Freelance Work — Let's Connect!"
+   - Green color, dismissible with X button
+   - Admin can toggle on/off
+
+6. RESUME/CV SECTION
+   - Dedicated section showing CV preview
+   - Download button
+   - "Last updated: [date]" text
+
+7. SKILLS FILTER
+   - In skills section, add filter buttons:
+     Frontend | Programming | Tools | All
+   - Click filter → show only that category
+
+8. PROJECT CARDS IMPROVEMENT
+   - Each card must have:
+     * Project thumbnail image
+     * Title + description
+     * Tech stack badges (colored)
+     * GitHub button with icon
+     * Live Demo button with icon
+     * Category tag (Web / Data Science / Tool)
+
+9. LANGUAGE SWITCHER
+   - Add English/Urdu toggle in navbar
+   - Basic translation for main headings
+
+10. CUSTOM 404 PAGE
+    - Match portfolio dark theme
+    - Animated 404 text
+    - "Go Home" button
+
+11. FOOTER IMPROVEMENT
+    - Add sitemap links
+    - "Made with ❤️ by Huzaifa Shamsi"
+    - Current year auto-update
+    - Hidden /admin link (small, subtle)
+
+Build all features one by one. Confirm each is done.

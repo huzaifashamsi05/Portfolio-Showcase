@@ -9,6 +9,7 @@ import {
   analyticsTable,
   messagesTable,
   rateLimitTable,
+  testimonialsTable,
 } from "@workspace/db";
 import { eq, sql } from "drizzle-orm";
 import {
@@ -30,6 +31,10 @@ import {
   AdminDeleteCertificationParams,
   AdminUpdateSocialBody,
   AdminUpdateBioBody,
+  AdminCreateTestimonialBody,
+  AdminUpdateTestimonialParams,
+  AdminUpdateTestimonialBody,
+  AdminDeleteTestimonialParams,
 } from "@workspace/api-zod";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
@@ -469,6 +474,61 @@ router.put("/admin/bio", (req, res) => {
       return Promise.reject(new Error("Bio not found"));
     })
     .then(([bio]) => res.json(bio))
+    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+});
+
+// ========================
+// TESTIMONIALS (PUBLIC)
+// ========================
+
+router.get("/testimonials", async (req, res) => {
+  try {
+    const testimonials = await db.select().from(testimonialsTable).orderBy(testimonialsTable.sortOrder);
+    return res.json(testimonials);
+  } catch (err) {
+    req.log.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// ========================
+// ADMIN TESTIMONIALS
+// ========================
+
+router.post("/admin/testimonials", (req, res) => {
+  if (!verifyAdmin(req)) return res.status(401).json({ error: "Unauthorized" });
+  const parsed = AdminCreateTestimonialBody.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Invalid input" });
+  return db
+    .insert(testimonialsTable)
+    .values(parsed.data)
+    .returning()
+    .then(([t]) => res.status(201).json(t))
+    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+});
+
+router.put("/admin/testimonials/:id", (req, res) => {
+  if (!verifyAdmin(req)) return res.status(401).json({ error: "Unauthorized" });
+  const params = AdminUpdateTestimonialParams.safeParse({ id: Number(req.params.id) });
+  const body = AdminUpdateTestimonialBody.safeParse(req.body);
+  if (!params.success || !body.success) return res.status(400).json({ error: "Invalid input" });
+  return db
+    .update(testimonialsTable)
+    .set(body.data)
+    .where(eq(testimonialsTable.id, params.data.id))
+    .returning()
+    .then(([t]) => res.json(t))
+    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+});
+
+router.delete("/admin/testimonials/:id", (req, res) => {
+  if (!verifyAdmin(req)) return res.status(401).json({ error: "Unauthorized" });
+  const parsed = AdminDeleteTestimonialParams.safeParse({ id: Number(req.params.id) });
+  if (!parsed.success) return res.status(400).json({ error: "Invalid id" });
+  return db
+    .delete(testimonialsTable)
+    .where(eq(testimonialsTable.id, parsed.data.id))
+    .then(() => res.json({ success: true, message: "Deleted" }))
     .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 

@@ -107,3 +107,16 @@ export const rateLimitTable = pgTable("rate_limit", {
   count: integer("count").notNull().default(1),
   windowStart: timestamp("window_start").notNull().defaultNow(),
 });
+
+export const testimonialsTable = pgTable("testimonials", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  role: text("role").notNull(),
+  quote: text("quote").notNull(),
+  rating: integer("rating").notNull().default(5),
+  sortOrder: integer("sort_order").notNull().default(0),
+});
+
+export const insertTestimonialSchema = createInsertSchema(testimonialsTable).omit({ id: true });
+export type InsertTestimonial = z.infer<typeof insertTestimonialSchema>;
+export type Testimonial = typeof testimonialsTable.$inferSelect;
