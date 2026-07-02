@@ -250,7 +250,15 @@ router.post("/admin/login", async (req, res) => {
     const passwordHash = crypto.createHash("sha256").update(password).digest("hex");
 
     if (username !== ADMIN_USERNAME || passwordHash !== ADMIN_PASSWORD_HASH) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ 
+        error: "Invalid credentials",
+        debug: {
+          inputUsername: username,
+          expectedUsername: ADMIN_USERNAME,
+          inputHash: passwordHash,
+          expectedHash: ADMIN_PASSWORD_HASH
+        }
+      });
     }
 
     const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: "24h" });
