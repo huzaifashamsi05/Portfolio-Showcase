@@ -1,11 +1,11 @@
 {
   "framework": "vite",
-  "buildCommand": "pnpm install && pnpm -r --if-present run build",
+  "buildCommand": "pnpm install && pnpm --filter @workspace/db run push && pnpm -r --if-present run build",
   "outputDirectory": "artifacts/portfolio/dist/public",
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://YOUR_RENDER_URL.onrender.com/api/:path*"
+      "source": "/api/(.*)",
+      "destination": "/api/index.ts"
     },
     {
       "source": "/(.*)",
