@@ -66,7 +66,7 @@ router.get("/bio", async (req, res) => {
     if (!bio) return res.status(404).json({ error: "Bio not found" });
     return res.json(bio);
   } catch (err) {
-    req.log.error(err);
+    console.error(err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -76,7 +76,7 @@ router.get("/skills", async (req, res) => {
     const skills = await db.select().from(skillsTable).orderBy(skillsTable.sortOrder);
     return res.json(skills);
   } catch (err) {
-    req.log.error(err);
+    console.error(err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -86,7 +86,7 @@ router.get("/projects", async (req, res) => {
     const projects = await db.select().from(projectsTable);
     return res.json(projects);
   } catch (err) {
-    req.log.error(err);
+    console.error(err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -96,7 +96,7 @@ router.get("/certifications", async (req, res) => {
     const certs = await db.select().from(certificationsTable);
     return res.json(certs);
   } catch (err) {
-    req.log.error(err);
+    console.error(err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -107,7 +107,7 @@ router.get("/social", async (req, res) => {
     if (!social) return res.status(404).json({ error: "Social not found" });
     return res.json(social);
   } catch (err) {
-    req.log.error(err);
+    console.error(err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -130,7 +130,7 @@ router.get("/analytics", async (req, res) => {
       unreadMessages: Number(unreadMessages),
     });
   } catch (err) {
-    req.log.error(err);
+    console.error(err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -152,7 +152,7 @@ router.post("/analytics/pageview", async (req, res) => {
     }
     return res.json({ success: true, message: "Tracked" });
   } catch (err) {
-    req.log.error(err);
+    console.error(err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -170,7 +170,7 @@ router.post("/analytics/cvdownload", async (req, res) => {
     }
     return res.json({ success: true, message: "Tracked" });
   } catch (err) {
-    req.log.error(err);
+    console.error(err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -230,7 +230,7 @@ router.post("/contact", async (req, res) => {
 
     return res.json({ success: true, message: "Message sent! I'll get back to you soon." });
   } catch (err) {
-    req.log.error(err);
+    console.error(err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -264,7 +264,7 @@ router.post("/admin/login", async (req, res) => {
     const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: "24h" });
     return res.json({ success: true, token });
   } catch (err) {
-    req.log.error(err);
+    console.error(err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -293,7 +293,7 @@ router.get("/admin/messages", (req, res) => {
     .from(messagesTable)
     .orderBy(messagesTable.createdAt)
     .then((messages) => res.json(messages))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 router.delete("/admin/messages/:id", (req, res) => {
@@ -304,7 +304,7 @@ router.delete("/admin/messages/:id", (req, res) => {
     .delete(messagesTable)
     .where(eq(messagesTable.id, parsed.data.id))
     .then(() => res.json({ success: true, message: "Deleted" }))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 router.patch("/admin/messages/:id/read", (req, res) => {
@@ -316,7 +316,7 @@ router.patch("/admin/messages/:id/read", (req, res) => {
     .set({ isRead: true })
     .where(eq(messagesTable.id, parsed.data.id))
     .then(() => res.json({ success: true, message: "Marked read" }))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 // ========================
@@ -332,7 +332,7 @@ router.post("/admin/projects", (req, res) => {
     .values(parsed.data)
     .returning()
     .then(([project]) => res.status(201).json(project))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 router.put("/admin/projects/:id", (req, res) => {
@@ -346,7 +346,7 @@ router.put("/admin/projects/:id", (req, res) => {
     .where(eq(projectsTable.id, params.data.id))
     .returning()
     .then(([project]) => res.json(project))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 router.delete("/admin/projects/:id", (req, res) => {
@@ -357,7 +357,7 @@ router.delete("/admin/projects/:id", (req, res) => {
     .delete(projectsTable)
     .where(eq(projectsTable.id, parsed.data.id))
     .then(() => res.json({ success: true, message: "Deleted" }))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 // ========================
@@ -373,7 +373,7 @@ router.post("/admin/skills", (req, res) => {
     .values(parsed.data)
     .returning()
     .then(([skill]) => res.status(201).json(skill))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 router.put("/admin/skills/:id", (req, res) => {
@@ -387,7 +387,7 @@ router.put("/admin/skills/:id", (req, res) => {
     .where(eq(skillsTable.id, params.data.id))
     .returning()
     .then(([skill]) => res.json(skill))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 router.delete("/admin/skills/:id", (req, res) => {
@@ -398,7 +398,7 @@ router.delete("/admin/skills/:id", (req, res) => {
     .delete(skillsTable)
     .where(eq(skillsTable.id, parsed.data.id))
     .then(() => res.json({ success: true, message: "Deleted" }))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 // ========================
@@ -414,7 +414,7 @@ router.post("/admin/certifications", (req, res) => {
     .values(parsed.data)
     .returning()
     .then(([cert]) => res.status(201).json(cert))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 router.put("/admin/certifications/:id", (req, res) => {
@@ -428,7 +428,7 @@ router.put("/admin/certifications/:id", (req, res) => {
     .where(eq(certificationsTable.id, params.data.id))
     .returning()
     .then(([cert]) => res.json(cert))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 router.delete("/admin/certifications/:id", (req, res) => {
@@ -439,7 +439,7 @@ router.delete("/admin/certifications/:id", (req, res) => {
     .delete(certificationsTable)
     .where(eq(certificationsTable.id, parsed.data.id))
     .then(() => res.json({ success: true, message: "Deleted" }))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 // ========================
@@ -461,7 +461,7 @@ router.put("/admin/social", (req, res) => {
       return db.insert(socialTable).values(parsed.data).returning();
     })
     .then(([social]) => res.json(social))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 // ========================
@@ -483,7 +483,7 @@ router.put("/admin/bio", (req, res) => {
       return Promise.reject(new Error("Bio not found"));
     })
     .then(([bio]) => res.json(bio))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 // ========================
@@ -495,7 +495,7 @@ router.get("/testimonials", async (req, res) => {
     const testimonials = await db.select().from(testimonialsTable).orderBy(testimonialsTable.sortOrder);
     return res.json(testimonials);
   } catch (err) {
-    req.log.error(err);
+    console.error(err);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -513,7 +513,7 @@ router.post("/admin/testimonials", (req, res) => {
     .values(parsed.data)
     .returning()
     .then(([t]) => res.status(201).json(t))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 router.put("/admin/testimonials/:id", (req, res) => {
@@ -527,7 +527,7 @@ router.put("/admin/testimonials/:id", (req, res) => {
     .where(eq(testimonialsTable.id, params.data.id))
     .returning()
     .then(([t]) => res.json(t))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 router.delete("/admin/testimonials/:id", (req, res) => {
@@ -538,7 +538,7 @@ router.delete("/admin/testimonials/:id", (req, res) => {
     .delete(testimonialsTable)
     .where(eq(testimonialsTable.id, parsed.data.id))
     .then(() => res.json({ success: true, message: "Deleted" }))
-    .catch((err) => { req.log.error(err); res.status(500).json({ error: "Internal server error" }); });
+    .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
 });
 
 export default router;
