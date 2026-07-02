@@ -2,7 +2,7 @@ services:
   - type: web
     name: portfolio-api
     env: node
-    buildCommand: pnpm install && pnpm run build
+    buildCommand: pnpm install && pnpm --filter @workspace/db run push && pnpm run build
     startCommand: cd artifacts/api-server && pnpm run start
     envVars:
       - key: DATABASE_URL
