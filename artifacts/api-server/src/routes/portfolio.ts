@@ -245,7 +245,8 @@ router.post("/admin/login", async (req, res) => {
     if (!parsed.success) {
       return res.status(400).json({ error: "Invalid input" });
     }
-    const { username, password } = parsed.data;
+    const username = parsed.data.username.trim();
+    const password = parsed.data.password.trim();
     const passwordHash = crypto.createHash("sha256").update(password).digest("hex");
 
     if (username !== ADMIN_USERNAME || passwordHash !== ADMIN_PASSWORD_HASH) {
