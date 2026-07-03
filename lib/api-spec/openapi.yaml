@@ -629,6 +629,9 @@ components:
           type: string
         department:
           type: string
+        cvUrl:
+          type: string
+          nullable: true
       required:
         - id
         - name
@@ -654,6 +657,9 @@ components:
           type: string
         availability:
           type: string
+        cvUrl:
+          type: string
+          nullable: true
       required:
         - tagline
         - subtitle

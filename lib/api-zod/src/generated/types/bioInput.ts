@@ -11,4 +11,5 @@ export interface BioInput {
   subtitle: string;
   about: string;
   availability: string;
+  cvUrl?: string | null;
 }

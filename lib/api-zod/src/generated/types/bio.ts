@@ -19,4 +19,5 @@ export interface Bio {
   availability: string;
   university: string;
   department: string;
+  cvUrl?: string | null;
 }

@@ -30,6 +30,7 @@ export const GetBioResponse = zod.object({
   availability: zod.string(),
   university: zod.string(),
   department: zod.string(),
+  cvUrl: zod.string().nullable().optional(),
 });
 
 /**
@@ -369,6 +370,7 @@ export const AdminUpdateBioBody = zod.object({
   subtitle: zod.string(),
   about: zod.string(),
   availability: zod.string(),
+  cvUrl: zod.string().nullable().optional(),
 });
 
 export const AdminUpdateBioResponse = zod.object({
@@ -384,6 +386,7 @@ export const AdminUpdateBioResponse = zod.object({
   availability: zod.string(),
   university: zod.string(),
   department: zod.string(),
+  cvUrl: zod.string().nullable().optional(),
 });
 
 /**

@@ -428,12 +428,13 @@ function SocialSection() {
 function BioSection() {
   const { data: bio, refetch } = useGetBio();
   const updateMutation = useAdminUpdateBio();
-  const [form, setForm] = useState({ tagline: "", subtitle: "", about: "", availability: "" });
+  const [form, setForm] = useState({ tagline: "", subtitle: "", about: "", availability: "", cvUrl: "" });
   const [loaded, setLoaded] = useState(false);
+  const [uploadingCv, setUploadingCv] = useState(false);
 
   useEffect(() => {
     if (bio && !loaded) {
-      setForm({ tagline: bio.tagline, subtitle: bio.subtitle, about: bio.about, availability: bio.availability });
+      setForm({ tagline: bio.tagline, subtitle: bio.subtitle, about: bio.about, availability: bio.availability, cvUrl: bio.cvUrl ?? "" });
       setLoaded(true);
     }
   }, [bio, loaded]);
@@ -446,6 +447,26 @@ function BioSection() {
     } catch { toast.error("Failed to update"); }
   };
 
+  const handleCvUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("CV must be less than 2MB");
+      return;
+    }
+    setUploadingCv(true);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setForm(prev => ({ ...prev, cvUrl: reader.result as string }));
+      setUploadingCv(false);
+    };
+    reader.onerror = () => {
+      toast.error("Failed to read file");
+      setUploadingCv(false);
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div>
       <h2 className="text-xl font-bold mb-6" style={{ fontFamily: "Orbitron, sans-serif", color: "#00f5ff" }}>Bio Editor</h2>
@@ -454,6 +475,18 @@ function BioSection() {
         <AdminTextarea label="Subtitle" value={form.subtitle} onChange={(v) => setForm({ ...form, subtitle: v })} rows={2} />
         <AdminTextarea label="About Me" value={form.about} onChange={(v) => setForm({ ...form, about: v })} rows={5} />
         <AdminInput label="Availability Status" value={form.availability} onChange={(v) => setForm({ ...form, availability: v })} />
+        <div className="mb-4">
+          <label className="block text-xs mb-1" style={{ color: "#00f5ff", fontFamily: "JetBrains Mono, monospace" }}>CV Document (PDF)</label>
+          <input 
+            type="file" 
+            accept=".pdf" 
+            onChange={handleCvUpload}
+            className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#00f5ff11] file:text-[#00f5ff] hover:file:bg-[#00f5ff22] cursor-pointer"
+            style={{ color: "#e2e8f0" }}
+          />
+          {form.cvUrl && !uploadingCv && <p className="text-xs mt-2 text-green-400">✓ CV is currently uploaded.</p>}
+          {uploadingCv && <p className="text-xs mt-2 text-yellow-400">Processing file...</p>}
+        </div>
         <Btn onClick={handleSave}>Save Changes</Btn>
       </div>
     </div>

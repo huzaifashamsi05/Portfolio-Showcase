@@ -525,7 +525,21 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap gap-3 justify-center md:justify-start">
               <button
-                onClick={() => scrollTo("#cv")}
+                onClick={async () => {
+                  try {
+                    await trackCvDownloadMutation.mutateAsync();
+                  } catch {}
+                  if (bio?.cvUrl) {
+                    const a = document.createElement("a");
+                    a.href = bio.cvUrl;
+                    a.download = "CV.pdf";
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                  } else {
+                    alert(isUrdu ? "سی وی دستیاب نہیں ہے" : "CV is currently unavailable");
+                  }
+                }}
                 className="px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-300"
                 style={{ background: "linear-gradient(135deg, #00f5ff, #0891b2)", color: "#080c18", fontFamily: "Space Grotesk, sans-serif", boxShadow: "0 0 20px #00f5ff44", cursor: "pointer", border: "none" }}
               >
