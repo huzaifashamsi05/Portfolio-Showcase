@@ -60,15 +60,6 @@ function verifyAdmin(req: import("express").Request): boolean {
 // PUBLIC ROUTES
 // ========================
 
-router.get("/admin/migrate", async (req, res) => {
-  try {
-    await db.execute(sql`ALTER TABLE bio ADD COLUMN IF NOT EXISTS cv_url text;`);
-    res.send("Migrated!");
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
-});
-
 router.get("/bio", async (req, res) => {
   try {
     const [bio] = await db.select().from(bioTable).limit(1);
