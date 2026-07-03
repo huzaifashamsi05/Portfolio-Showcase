@@ -347,11 +347,7 @@ export default function HomePage() {
   const card = theme === "dark" ? "#0d1426" : "#ffffff";
   const border = theme === "dark" ? "#1e293b" : "#e2e8f0";
 
-  const displayTestimonials = testimonials && testimonials.length > 0 ? testimonials : [
-    { id: 1, name: "Dr. Sarah Ahmed", role: "University Supervisor — NEDUET", quote: "Huzaifa is an exceptional student with remarkable problem-solving skills. His dedication to Python and data science shows great potential.", rating: 5, sortOrder: 1 },
-    { id: 2, name: "Bilal Khan", role: "Senior Developer", quote: "Working with Huzaifa was a great experience. He delivered a clean, functional web scraping tool on time with excellent documentation.", rating: 5, sortOrder: 2 },
-    { id: 3, name: "Farrukh Mirza", role: "Freelance Client", quote: "Outstanding work on my data analysis project. Huzaifa went above and beyond expectations — highly recommend!", rating: 5, sortOrder: 3 },
-  ];
+  const displayTestimonials = testimonials ?? [];
 
   return (
     <div style={{ background: bg, color: fg, minHeight: "100vh" }} dir={isUrdu ? "rtl" : "ltr"}>
@@ -801,11 +797,7 @@ export default function HomePage() {
       <SectionWrapper id="projects">
         <SectionTitle accent="#8b5cf6">{isUrdu ? "منصوبے" : "Projects"}</SectionTitle>
         <div className="grid md:grid-cols-3 gap-6">
-          {(projects && projects.length > 0 ? projects : [
-            { id: 1, title: "Portfolio Website", description: "Personal portfolio showcasing skills and projects with dark futuristic theme.", techUsed: "React, TypeScript, Vite, Tailwind CSS", status: "live", liveUrl: null, githubUrl: "https://github.com/huzaifashamsi05" },
-            { id: 2, title: "Data Analysis Dashboard", description: "Data visualization dashboard with Python and data science tools.", techUsed: "Python, Pandas, Matplotlib, Seaborn", status: "coming_soon", liveUrl: null, githubUrl: null },
-            { id: 3, title: "Network Monitor Tool", description: "Basic network monitoring solution for small environments.", techUsed: "C++, Networking, WinSock", status: "in_progress", liveUrl: null, githubUrl: null },
-          ]).map((project, i) => {
+          {(projects ?? []).map((project, i) => {
             const category = PROJECT_CATEGORIES[project.title] ?? "Web";
             const catColor = category === "Data Science" ? "#8b5cf6" : category === "Tool" ? "#f59e0b" : "#00f5ff";
             return (
@@ -855,7 +847,7 @@ export default function HomePage() {
 
                 <div className="p-5 flex flex-col flex-1">
                   <h3 className="font-bold text-base mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>{project.title}</h3>
-                  <p className="text-sm mb-4 flex-1" style={{ color: theme === "dark" ? "#94a3b8" : "#475569", lineHeight: 1.6 }}>{project.description}</p>
+                  <p className="text-sm mb-4 flex-1 whitespace-pre-wrap" style={{ color: theme === "dark" ? "#94a3b8" : "#475569", lineHeight: 1.6 }}>{project.description}</p>
                   <div className="flex flex-wrap gap-1 mb-4">
                     {project.techUsed.split(",").map((tech) => (
                       <span key={tech} className="text-xs px-2 py-0.5 rounded" style={{ background: "#00f5ff11", color: "#00f5ff", border: "1px solid #00f5ff22", fontFamily: "JetBrains Mono, monospace" }}>
@@ -929,7 +921,7 @@ export default function HomePage() {
               <div className="mb-3">
                 <StarRating rating={t.rating} />
               </div>
-              <p className="text-sm mb-5 leading-relaxed" style={{ color: theme === "dark" ? "#94a3b8" : "#475569", fontStyle: "italic" }}>
+              <p className="text-sm mb-5 leading-relaxed whitespace-pre-wrap" style={{ color: theme === "dark" ? "#94a3b8" : "#475569", fontStyle: "italic" }}>
                 "{t.quote}"
               </p>
               <div className="flex items-center gap-3 pt-4" style={{ borderTop: `1px solid ${border}` }}>
@@ -978,10 +970,7 @@ export default function HomePage() {
       <SectionWrapper id="certifications">
         <SectionTitle accent="#8b5cf6">{isUrdu ? "سرٹیفیکیٹس" : "Certifications"}</SectionTitle>
         <div className="grid sm:grid-cols-2 gap-6">
-          {(certifications && certifications.length > 0 ? certifications : [
-            { id: 1, title: "HTML, CSS & JavaScript Certificate", organization: "LumaByte Pvt Ltd", date: "11 November 2025", imageUrl: null, verifyUrl: null },
-            { id: 2, title: "Networking Basics Certificate", organization: "Saylani Welfare International Trust (Cisco Networking Academy)", date: "05 Jan 2026", imageUrl: null, verifyUrl: null },
-          ]).map((cert, i) => {
+          {(certifications ?? []).map((cert, i) => {
             const certImg = getCertImage(cert as { imageUrl: string | null; title: string });
             return (
               <motion.div
