@@ -276,8 +276,14 @@ export default function HomePage() {
 
   const [contactForm, setContactForm] = useState({ name: "", email: "", message: "", honeypot: "" });
 
+  const [contactCooldown, setContactCooldown] = useState(false);
+
+  const tracked = useRef(false);
   useEffect(() => {
-    trackPageView.mutate();
+    if (!tracked.current) {
+      trackPageView.mutate();
+      tracked.current = true;
+    }
   }, []);
 
   useEffect(() => {
@@ -302,17 +308,20 @@ export default function HomePage() {
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (contactForm.honeypot) return;
+    if (contactForm.honeypot || contactCooldown) return;
     if (!contactForm.name || !contactForm.email || !contactForm.message) {
       toast.error("Please fill in all fields.");
       return;
     }
+    setContactCooldown(true);
     try {
       await submitContact.mutateAsync({ data: { name: contactForm.name, email: contactForm.email, message: contactForm.message, honeypot: "" } });
       toast.success("Message sent! I'll get back to you soon.");
       setContactForm({ name: "", email: "", message: "", honeypot: "" });
+      setTimeout(() => setContactCooldown(false), 60000);
     } catch {
       toast.error("Failed to send. Please try again.");
+      setContactCooldown(false);
     }
   };
 
@@ -527,7 +536,7 @@ export default function HomePage() {
               <button
                 onClick={async () => {
                   try {
-                    await trackCvDownloadMutation.mutateAsync();
+                    await trackCvDownload.mutateAsync();
                   } catch {}
                   if (bio?.cvUrl) {
                     const a = document.createElement("a");
@@ -1004,7 +1013,15 @@ export default function HomePage() {
                   style={{ background: theme === "dark" ? "#1e293b" : "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center" }}
                 >
                   {certImg ? (
-                    <img src={certImg as string} alt={cert.title} className="w-full h-full object-cover" />
+                    <img 
+                      src={certImg as string} 
+                      alt={cert.title} 
+                      className="w-full h-full object-cover" 
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                        (e.target as HTMLImageElement).parentElement!.innerHTML = '<span style="color: #8b5cf6; font-family: Orbitron, sans-serif; font-size: 2rem;">🏆</span>';
+                      }}
+                    />
                   ) : (
                     <span style={{ color: "#8b5cf6", fontFamily: "Orbitron, sans-serif", fontSize: "2rem" }}>🏆</span>
                   )}
@@ -1224,11 +1241,11 @@ export default function HomePage() {
             </div>
             <button
               type="submit"
-              disabled={submitContact.isPending}
+              disabled={submitContact.isPending || contactCooldown}
               className="w-full py-3 rounded-lg font-bold text-sm transition-all duration-300"
-              style={{ background: "linear-gradient(135deg, #00f5ff, #8b5cf6)", color: "#080c18", fontFamily: "Space Grotesk, sans-serif", cursor: "pointer", boxShadow: "0 0 20px #00f5ff33", opacity: submitContact.isPending ? 0.7 : 1, border: "none" }}
+              style={{ background: "linear-gradient(135deg, #00f5ff, #8b5cf6)", color: "#080c18", fontFamily: "Space Grotesk, sans-serif", cursor: (submitContact.isPending || contactCooldown) ? "not-allowed" : "pointer", boxShadow: "0 0 20px #00f5ff33", opacity: (submitContact.isPending || contactCooldown) ? 0.7 : 1, border: "none" }}
             >
-              {submitContact.isPending ? (isUrdu ? "بھیجا جا رہا ہے..." : "Sending...") : (isUrdu ? "پیغام بھیجیں" : "Send Message")}
+              {submitContact.isPending ? (isUrdu ? "بھیجا جا رہا ہے..." : "Sending...") : contactCooldown ? (isUrdu ? "براہ کرم انتظار کریں..." : "Please wait...") : (isUrdu ? "پیغام بھیجیں" : "Send Message")}
             </button>
           </form>
         </div>
@@ -1253,7 +1270,7 @@ export default function HomePage() {
                   { href: social.twitter, label: "Twitter" },
                   { href: social.youtube, label: "YouTube" },
                   { href: social.instagram, label: "Instagram" },
-                ].map((s) => (
+                ].filter(s => s.href && s.href.trim() !== "").map((s) => (
                   <a
                     key={s.label}
                     href={s.href}

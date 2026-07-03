@@ -243,6 +243,7 @@ function ProjectsSection() {
             </div>
           </div>
         ))}
+        {(!projects || projects.length === 0) && <p className="text-sm" style={{ color: "#475569" }}>No projects added yet.</p>}
       </div>
     </div>
   );
@@ -314,6 +315,7 @@ function SkillsSection() {
             </div>
           </div>
         ))}
+        {(!skills || skills.length === 0) && <p className="text-sm" style={{ color: "#475569" }}>No skills added yet.</p>}
       </div>
     </div>
   );
@@ -386,6 +388,7 @@ function CertificationsSection() {
             </div>
           </div>
         ))}
+        {(!certifications || certifications.length === 0) && <p className="text-sm" style={{ color: "#475569" }}>No certifications added yet.</p>}
       </div>
     </div>
   );
