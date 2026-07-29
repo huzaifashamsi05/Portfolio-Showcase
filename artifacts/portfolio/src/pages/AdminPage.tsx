@@ -15,8 +15,6 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { setToken, removeToken, getToken, getAuthHeaders } from "@/lib/auth";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 
 type Section = "dashboard" | "messages" | "projects" | "skills" | "certifications" | "social" | "bio" | "analytics" | "testimonials";
 
@@ -210,12 +208,7 @@ function ProjectsSection() {
       <div className="p-5 rounded-xl mb-6" style={{ background: "#0d1426", border: "1px solid #1e293b" }}>
         <h3 className="text-sm font-semibold mb-4" style={{ color: "#00f5ff" }}>{editing !== null ? "Edit Project" : "Add Project"}</h3>
         <AdminInput label="Title" value={form.title} onChange={(v) => setForm({ ...form, title: v })} />
-        <div className="mb-3">
-          <label className="block text-xs mb-1" style={{ color: "#00f5ff", fontFamily: "JetBrains Mono, monospace" }}>Description (Rich Text)</label>
-          <div className="bg-[#0d1a2e] rounded-lg border border-[#1e293b] overflow-hidden">
-            <ReactQuill theme="snow" value={form.description} onChange={(v) => setForm({ ...form, description: v })} className="text-sm text-[#e2e8f0]" />
-          </div>
-        </div>
+        <AdminTextarea label="Description (HTML)" value={form.description} onChange={(v) => setForm({ ...form, description: v })} rows={5} />
         <AdminInput label="Tech Used (comma separated)" value={form.techUsed} onChange={(v) => setForm({ ...form, techUsed: v })} />
         <AdminInput label="Live URL (optional)" value={form.liveUrl} onChange={(v) => setForm({ ...form, liveUrl: v })} />
         <AdminInput label="GitHub URL (optional)" value={form.githubUrl} onChange={(v) => setForm({ ...form, githubUrl: v })} />
