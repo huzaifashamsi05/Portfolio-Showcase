@@ -870,7 +870,11 @@ export default function HomePage() {
 
                 <div className="p-5 flex flex-col flex-1">
                   <h3 className="font-bold text-base mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>{project.title}</h3>
-                  <p className="text-sm mb-4 flex-1 whitespace-pre-wrap" style={{ color: theme === "dark" ? "#94a3b8" : "#475569", lineHeight: 1.6 }}>{project.description}</p>
+                  <div 
+                    className={`text-sm mb-4 flex-1 prose prose-sm ${theme === "dark" ? "prose-invert" : ""} max-w-none`} 
+                    style={{ color: theme === "dark" ? "#94a3b8" : "#475569", lineHeight: 1.6 }} 
+                    dangerouslySetInnerHTML={{ __html: project.description }} 
+                  />
                   <div className="flex flex-wrap gap-1 mb-4">
                     {project.techUsed.split(",").map((tech) => (
                       <span key={tech} className="text-xs px-2 py-0.5 rounded" style={{ background: "#00f5ff11", color: "#00f5ff", border: "1px solid #00f5ff22", fontFamily: "JetBrains Mono, monospace" }}>

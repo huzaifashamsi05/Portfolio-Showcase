@@ -16,6 +16,7 @@ export const bioTable = pgTable("bio", {
   university: text("university").notNull(),
   department: text("department").notNull(),
   cvUrl: text("cv_url"),
+  themeColor: text("theme_color").notNull().default("#00f5ff"),
 });
 
 export const insertBioSchema = createInsertSchema(bioTable).omit({ id: true });

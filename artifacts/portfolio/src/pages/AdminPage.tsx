@@ -15,6 +15,8 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { setToken, removeToken, getToken, getAuthHeaders } from "@/lib/auth";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 type Section = "dashboard" | "messages" | "projects" | "skills" | "certifications" | "social" | "bio" | "analytics" | "testimonials";
 
@@ -208,7 +210,12 @@ function ProjectsSection() {
       <div className="p-5 rounded-xl mb-6" style={{ background: "#0d1426", border: "1px solid #1e293b" }}>
         <h3 className="text-sm font-semibold mb-4" style={{ color: "#00f5ff" }}>{editing !== null ? "Edit Project" : "Add Project"}</h3>
         <AdminInput label="Title" value={form.title} onChange={(v) => setForm({ ...form, title: v })} />
-        <AdminTextarea label="Description" value={form.description} onChange={(v) => setForm({ ...form, description: v })} rows={3} />
+        <div className="mb-3">
+          <label className="block text-xs mb-1" style={{ color: "#00f5ff", fontFamily: "JetBrains Mono, monospace" }}>Description (Rich Text)</label>
+          <div className="bg-[#0d1a2e] rounded-lg border border-[#1e293b] overflow-hidden">
+            <ReactQuill theme="snow" value={form.description} onChange={(v) => setForm({ ...form, description: v })} className="text-sm text-[#e2e8f0]" />
+          </div>
+        </div>
         <AdminInput label="Tech Used (comma separated)" value={form.techUsed} onChange={(v) => setForm({ ...form, techUsed: v })} />
         <AdminInput label="Live URL (optional)" value={form.liveUrl} onChange={(v) => setForm({ ...form, liveUrl: v })} />
         <AdminInput label="GitHub URL (optional)" value={form.githubUrl} onChange={(v) => setForm({ ...form, githubUrl: v })} />
@@ -431,13 +438,13 @@ function SocialSection() {
 function BioSection() {
   const { data: bio, refetch } = useGetBio();
   const updateMutation = useAdminUpdateBio();
-  const [form, setForm] = useState({ tagline: "", subtitle: "", about: "", availability: "", cvUrl: "" });
+  const [form, setForm] = useState({ tagline: "", subtitle: "", about: "", availability: "", cvUrl: "", themeColor: "#00f5ff" });
   const [loaded, setLoaded] = useState(false);
   const [uploadingCv, setUploadingCv] = useState(false);
 
   useEffect(() => {
     if (bio && !loaded) {
-      setForm({ tagline: bio.tagline, subtitle: bio.subtitle, about: bio.about, availability: bio.availability, cvUrl: bio.cvUrl ?? "" });
+      setForm({ tagline: bio.tagline, subtitle: bio.subtitle, about: bio.about, availability: bio.availability, cvUrl: bio.cvUrl ?? "", themeColor: (bio as any).themeColor ?? "#00f5ff" });
       setLoaded(true);
     }
   }, [bio, loaded]);
@@ -478,6 +485,18 @@ function BioSection() {
         <AdminTextarea label="Subtitle" value={form.subtitle} onChange={(v) => setForm({ ...form, subtitle: v })} rows={2} />
         <AdminTextarea label="About Me" value={form.about} onChange={(v) => setForm({ ...form, about: v })} rows={5} />
         <AdminInput label="Availability Status" value={form.availability} onChange={(v) => setForm({ ...form, availability: v })} />
+        <div className="mb-4">
+          <label className="block text-xs mb-1" style={{ color: "#00f5ff", fontFamily: "JetBrains Mono, monospace" }}>Theme Accent Color</label>
+          <div className="flex items-center gap-3">
+            <input 
+              type="color" 
+              value={form.themeColor} 
+              onChange={(e) => setForm({ ...form, themeColor: e.target.value })} 
+              className="h-10 w-10 cursor-pointer border-0 rounded-lg p-0 bg-transparent"
+            />
+            <span className="text-sm font-mono text-slate-400">{form.themeColor}</span>
+          </div>
+        </div>
         <div className="mb-4">
           <label className="block text-xs mb-1" style={{ color: "#00f5ff", fontFamily: "JetBrains Mono, monospace" }}>CV Document (PDF)</label>
           <input 

@@ -12,4 +12,5 @@ export interface BioInput {
   about: string;
   availability: string;
   cvUrl?: string | null;
+  themeColor?: string;
 }

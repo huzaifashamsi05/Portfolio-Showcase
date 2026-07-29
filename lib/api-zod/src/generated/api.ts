@@ -371,6 +371,7 @@ export const AdminUpdateBioBody = zod.object({
   about: zod.string(),
   availability: zod.string(),
   cvUrl: zod.string().nullable().optional(),
+  themeColor: zod.string().optional(),
 });
 
 export const AdminUpdateBioResponse = zod.object({
@@ -387,6 +388,7 @@ export const AdminUpdateBioResponse = zod.object({
   university: zod.string(),
   department: zod.string(),
   cvUrl: zod.string().nullable().optional(),
+  themeColor: zod.string(),
 });
 
 /**

@@ -20,4 +20,5 @@ export interface Bio {
   university: string;
   department: string;
   cvUrl?: string | null;
+  themeColor: string;
 }
