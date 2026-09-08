@@ -52,7 +52,7 @@ const EDUCATION = [
     school: "Dawood University of Engineering & Technology",
     degree: "BS Data Science",
     period: "Aug 2025 – 2029",
-    note: "1st Year, 2nd Semester",
+    note: "2nd Year, 1st Semester",
   },
   {
     school: "Forman College",
@@ -1185,7 +1185,7 @@ export default function HomePage() {
           />
         </div>
         <p className="text-center text-sm mt-3" style={{ color: theme === "dark" ? "#64748b" : "#94a3b8", fontFamily: "JetBrains Mono, monospace" }}>
-          📍 Gulshan-e-Maymar, Sector X-3, Karachi, Pakistan
+          📍 Karachi, Pakistan
         </p>
       </SectionWrapper>
 
