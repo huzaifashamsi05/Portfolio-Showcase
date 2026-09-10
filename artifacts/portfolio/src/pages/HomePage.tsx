@@ -173,8 +173,8 @@ function ParticlesCanvas() {
   return <canvas ref={canvasRef} id="particles-canvas" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />;
 }
 
-function Typewriter({ isUrdu }: { isUrdu: boolean }) {
-  const roles = isUrdu ? ROLES_UR : ROLES;
+function Typewriter({ isUrdu, roles: rolesProp }: { isUrdu: boolean; roles?: string[] }) {
+  const roles = rolesProp && rolesProp.length > 0 ? rolesProp : (isUrdu ? ROLES_UR : ROLES);
   const [roleIdx, setRoleIdx] = useState(0);
   const [charIdx, setCharIdx] = useState(0);
   const [deleting, setDeleting] = useState(false);
@@ -528,7 +528,7 @@ export default function HomePage() {
               {bio?.name ?? "Muhammad Huzaifa Shamsi"}
             </h1>
             <div className="mb-4 text-lg" style={{ minHeight: "2rem" }}>
-              <Typewriter isUrdu={isUrdu} />
+              <Typewriter isUrdu={isUrdu} roles={bio?.tagline ? bio.tagline.split("|").map((s) => s.trim()) : undefined} />
             </div>
             <p className="text-sm md:text-base mb-8 leading-relaxed max-w-xl" style={{ color: theme === "dark" ? "#94a3b8" : "#475569" }}>
               {bio?.subtitle ?? "Crafting interactive web experiences while exploring the limitless possibilities of Data Science and Artificial Intelligence."}
