@@ -262,13 +262,7 @@ router.post("/admin/login", loginLimiter, async (req, res) => {
 
     if (username !== ADMIN_USERNAME || passwordHash !== ADMIN_PASSWORD_HASH) {
       return res.status(401).json({ 
-        error: "Invalid credentials",
-        debug: {
-          inputUsername: username,
-          expectedUsername: ADMIN_USERNAME,
-          inputHash: passwordHash,
-          expectedHash: ADMIN_PASSWORD_HASH
-        }
+        error: "Invalid credentials"
       });
     }
 
