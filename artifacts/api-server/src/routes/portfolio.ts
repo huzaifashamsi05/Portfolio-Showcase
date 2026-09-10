@@ -491,7 +491,7 @@ router.put("/admin/bio", (req, res) => {
       if (existing) {
         return db.update(bioTable).set(parsed.data).where(eq(bioTable.id, existing.id)).returning();
       }
-      return db.insert(bioTable).values(parsed.data).returning();
+      return db.insert(bioTable).values({ name: "Muhammad Huzaifa Shamsi", shortName: "MH Shamsi", location: "Karachi, Pakistan", email: "huzaifashamsi05@gmail.com", phone: "+92 309 8333185", university: "Dawood University of Engineering & Technology", department: "BS Data Science", ...parsed.data }).returning();
     })
     .then(([bio]) => res.json(bio))
     .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
