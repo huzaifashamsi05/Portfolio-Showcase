@@ -1131,7 +1131,7 @@ export default function HomePage() {
             {/* Download actions */}
             <div className="px-6 pb-6 flex flex-wrap gap-3 items-center" style={{ background: card }}>
               <a
-                href="/api/cv"
+                href={bio?.cvUrl || "/api/cv"}
                 download="Muhammad_Huzaifa_Shamsi_CV.pdf"
                 onClick={handleCvDownload}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300"
