@@ -491,7 +491,7 @@ router.put("/admin/bio", (req, res) => {
       if (existing) {
         return db.update(bioTable).set(parsed.data).where(eq(bioTable.id, existing.id)).returning();
       }
-      return Promise.reject(new Error("Bio not found"));
+      return db.insert(bioTable).values(parsed.data).returning();
     })
     .then(([bio]) => res.json(bio))
     .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });
