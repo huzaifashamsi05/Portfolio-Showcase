@@ -662,8 +662,8 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             {[
-              { num: "3+", label: "Technologies" },
-              { num: "1st", label: "Year University" },
+              { num: "13+", label: "Technologies" },
+              { num: "2nd", label: "Year University" },
               { num: "2", label: "Certifications" },
               { num: "∞", label: "Curiosity" },
             ].map((stat) => (
@@ -1112,7 +1112,7 @@ export default function HomePage() {
             <div className="p-6 grid md:grid-cols-3 gap-4" style={{ background: card }}>
               {[
                 { title: "Education", icon: "🎓", items: ["BS Data Science — Dawood University", "Intermediate — Forman College", "Matric (CS) — St. Paul's"] },
-                { title: "Key Skills", icon: "⚡", items: ["HTML, CSS, JavaScript", "Python, C, C++, Java", "Data Science Basics"] },
+                { title: "Key Skills", icon: "⚡", items: ["Python, JavaScript, C++", "React, FastAPI, Tailwind CSS", "scikit-learn, XGBoost, Deep Learning"] },
                 { title: "Certifications", icon: "🏆", items: ["HTML/CSS/JS — LumaByte", "Networking — Cisco/Saylani"] },
               ].map((section) => (
                 <div key={section.title}>
@@ -1143,7 +1143,7 @@ export default function HomePage() {
                 {isUrdu ? "سی وی ڈاؤن لوڈ کریں" : "Download CV (PDF)"}
               </a>
               <span className="text-xs" style={{ color: theme === "dark" ? "#475569" : "#94a3b8", fontFamily: "JetBrains Mono, monospace" }}>
-                Last updated: January 2026
+                Last updated: September 2026
               </span>
             </div>
           </motion.div>
