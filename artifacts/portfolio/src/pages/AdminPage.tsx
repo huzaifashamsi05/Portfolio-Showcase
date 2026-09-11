@@ -169,12 +169,12 @@ function ProjectsSection() {
   const updateMutation = useAdminUpdateProject();
   const deleteMutation = useAdminDeleteProject();
   const [editing, setEditing] = useState<number | null>(null);
-  const [form, setForm] = useState({ title: "", description: "", techUsed: "", liveUrl: "", githubUrl: "", status: "coming_soon" as "live" | "in_progress" | "coming_soon" });
+    const [form, setForm] = useState({ title: "", description: "", techUsed: "", liveUrl: "", githubUrl: "", imageUrl: "", status: "coming_soon" as "live" | "in_progress" | "coming_soon" });
 
-  const resetForm = () => { setForm({ title: "", description: "", techUsed: "", liveUrl: "", githubUrl: "", status: "coming_soon" }); setEditing(null); };
+    const resetForm = () => { setForm({ title: "", description: "", techUsed: "", liveUrl: "", githubUrl: "", imageUrl: "", status: "coming_soon" }); setEditing(null); };
 
   const handleSave = async () => {
-    const data = { title: form.title, description: form.description, techUsed: form.techUsed, liveUrl: form.liveUrl || null, githubUrl: form.githubUrl || null, status: form.status };
+        const data = { title: form.title, description: form.description, techUsed: form.techUsed, liveUrl: form.liveUrl || null, githubUrl: form.githubUrl || null, imageUrl: form.imageUrl || null, status: form.status };
     try {
       if (editing !== null) {
         await updateMutation.mutateAsync({ id: editing, data } as any);
@@ -190,7 +190,7 @@ function ProjectsSection() {
 
   const startEdit = (p: any) => {
     setEditing(p.id);
-    setForm({ title: p.title, description: p.description, techUsed: p.techUsed, liveUrl: p.liveUrl ?? "", githubUrl: p.githubUrl ?? "", status: p.status });
+        setForm({ title: p.title, description: p.description, techUsed: p.techUsed, liveUrl: p.liveUrl ?? "", githubUrl: p.githubUrl ?? "", imageUrl: p.imageUrl ?? "", status: p.status });
   };
 
   const handleDelete = async (id: number) => {
@@ -212,6 +212,7 @@ function ProjectsSection() {
         <AdminInput label="Tech Used (comma separated)" value={form.techUsed} onChange={(v) => setForm({ ...form, techUsed: v })} />
         <AdminInput label="Live URL (optional)" value={form.liveUrl} onChange={(v) => setForm({ ...form, liveUrl: v })} />
         <AdminInput label="GitHub URL (optional)" value={form.githubUrl} onChange={(v) => setForm({ ...form, githubUrl: v })} />
+                <AdminInput label="Image URL (optional)" value={form.imageUrl} onChange={(v) => setForm({ ...form, imageUrl: v })} placeholder="https://... or paste a data:image URL" />
         <div className="mb-3">
           <label className="block text-xs mb-1" style={{ color: "#00f5ff", fontFamily: "JetBrains Mono, monospace" }}>Status</label>
           <select
