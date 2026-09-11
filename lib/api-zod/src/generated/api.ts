@@ -55,6 +55,7 @@ export const GetProjectsResponseItem = zod.object({
   techUsed: zod.string(),
   liveUrl: zod.string().nullable(),
   githubUrl: zod.string().nullable(),
+  imageUrl: zod.string().nullable(),
   status: zod.enum(["live", "in_progress", "coming_soon"]),
   createdAt: zod.string(),
 });
@@ -205,6 +206,7 @@ export const AdminCreateProjectBody = zod.object({
   techUsed: zod.string(),
   liveUrl: zod.string().nullish(),
   githubUrl: zod.string().nullish(),
+  imageUrl: zod.string().nullish(),
   status: zod.enum(["live", "in_progress", "coming_soon"]),
 });
 
@@ -221,6 +223,7 @@ export const AdminUpdateProjectBody = zod.object({
   techUsed: zod.string(),
   liveUrl: zod.string().nullish(),
   githubUrl: zod.string().nullish(),
+  imageUrl: zod.string().nullish(),
   status: zod.enum(["live", "in_progress", "coming_soon"]),
 });
 
@@ -231,6 +234,7 @@ export const AdminUpdateProjectResponse = zod.object({
   techUsed: zod.string(),
   liveUrl: zod.string().nullable(),
   githubUrl: zod.string().nullable(),
+  imageUrl: zod.string().nullable(),
   status: zod.enum(["live", "in_progress", "coming_soon"]),
   createdAt: zod.string(),
 });
