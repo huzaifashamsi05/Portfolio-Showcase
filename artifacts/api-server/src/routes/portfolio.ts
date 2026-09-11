@@ -42,8 +42,8 @@ import crypto from "crypto";
 const router = Router();
 
 const JWT_SECRET = process.env.SESSION_SECRET ?? "portfolio-secret-key";
-const ADMIN_USERNAME = "Huzaifa";
-const ADMIN_PASSWORD_HASH = crypto.createHash("sha256").update("1stfeb2006").digest("hex");
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME ?? "Huzaifa";
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH ?? crypto.createHash("sha256").update(process.env.ADMIN_PASSWORD ?? "changeme-set-ADMIN_PASSWORD-env-var").digest("hex");
 
 function verifyAdmin(req: import("express").Request): boolean {
   const auth = req.headers.authorization;
