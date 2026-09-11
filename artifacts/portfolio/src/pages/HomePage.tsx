@@ -845,9 +845,20 @@ export default function HomePage() {
                     borderBottom: `1px solid ${border}`,
                   }}
                 >
-                  <div style={{ fontFamily: "Orbitron, sans-serif", color: catColor, opacity: 0.3, fontSize: "3rem", fontWeight: 900 }}>
-                    {category === "Data Science" ? "📊" : category === "Tool" ? "🔧" : "🌐"}
-                  </div>
+                  {project.imageUrl ? (
+                                <img
+                                                  src={project.imageUrl}
+                                                  alt={project.title}
+                                                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                                                  onError={(e) => {
+                                                                      (e.target as HTMLImageElement).style.display = "none";
+                                                  }}
+                                                />
+                              ) : (
+                                <div style={{ fontFamily: "Orbitron, sans-serif", color: catColor, opacity: 0.3, fontSize: "3rem", fontWeight: 900 }}>
+                                  {category === "Data Science" ? "📊" : category === "Tool" ? "🔧" : "🌐"}
+                                </div>
+                              )}
                   {/* Status badge */}
                   <span
                     className="absolute top-3 right-3 text-xs px-2 py-0.5 rounded-full"
