@@ -42,8 +42,8 @@ import crypto from "crypto";
 const router = Router();
 
 const JWT_SECRET = process.env.SESSION_SECRET ?? "portfolio-secret-key";
-const ADMIN_USERNAME = "Huzaifa";
-const ADMIN_PASSWORD_HASH = crypto.createHash("sha256").update("1stfeb2006").digest("hex");
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME ?? "Huzaifa";
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH ?? crypto.createHash("sha256").update(process.env.ADMIN_PASSWORD ?? "changeme-set-ADMIN_PASSWORD-env-var").digest("hex");
 
 function verifyAdmin(req: import("express").Request): boolean {
   const auth = req.headers.authorization;
@@ -262,13 +262,7 @@ router.post("/admin/login", loginLimiter, async (req, res) => {
 
     if (username !== ADMIN_USERNAME || passwordHash !== ADMIN_PASSWORD_HASH) {
       return res.status(401).json({ 
-        error: "Invalid credentials",
-        debug: {
-          inputUsername: username,
-          expectedUsername: ADMIN_USERNAME,
-          inputHash: passwordHash,
-          expectedHash: ADMIN_PASSWORD_HASH
-        }
+        error: "Invalid credentials"
       });
     }
 
@@ -491,7 +485,7 @@ router.put("/admin/bio", (req, res) => {
       if (existing) {
         return db.update(bioTable).set(parsed.data).where(eq(bioTable.id, existing.id)).returning();
       }
-      return Promise.reject(new Error("Bio not found"));
+      return db.insert(bioTable).values({ name: "Muhammad Huzaifa Shamsi", shortName: "MH Shamsi", location: "Karachi, Pakistan", email: "huzaifashamsi05@gmail.com", phone: "+92 309 8333185", university: "Dawood University of Engineering & Technology", department: "BS Data Science", ...parsed.data }).returning();
     })
     .then(([bio]) => res.json(bio))
     .catch((err) => { console.error(err); res.status(500).json({ error: "Internal server error" }); });

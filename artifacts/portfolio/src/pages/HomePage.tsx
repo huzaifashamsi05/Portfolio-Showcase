@@ -1,3 +1,4 @@
+// redeploy trigger
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, useInView } from "framer-motion";
 import { toast } from "sonner";
@@ -51,7 +52,7 @@ const EDUCATION = [
     school: "Dawood University of Engineering & Technology",
     degree: "BS Data Science",
     period: "Aug 2025 – 2029",
-    note: "1st Year, 2nd Semester",
+    note: "2nd Year, 1st Semester",
   },
   {
     school: "Forman College",
@@ -171,8 +172,8 @@ function ParticlesCanvas() {
   return <canvas ref={canvasRef} id="particles-canvas" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />;
 }
 
-function Typewriter({ isUrdu }: { isUrdu: boolean }) {
-  const roles = isUrdu ? ROLES_UR : ROLES;
+function Typewriter({ isUrdu, roles: rolesProp }: { isUrdu: boolean; roles?: string[] }) {
+  const roles = rolesProp && rolesProp.length > 0 ? rolesProp : (isUrdu ? ROLES_UR : ROLES);
   const [roleIdx, setRoleIdx] = useState(0);
   const [charIdx, setCharIdx] = useState(0);
   const [deleting, setDeleting] = useState(false);
@@ -513,7 +514,7 @@ export default function HomePage() {
               {bio?.name ?? "Muhammad Huzaifa Shamsi"}
             </h1>
             <div className="mb-4 text-lg" style={{ minHeight: "2rem" }}>
-              <Typewriter isUrdu={isUrdu} />
+              <Typewriter isUrdu={isUrdu} roles={bio?.tagline ? bio.tagline.split("|").map((s) => s.trim()) : undefined} />
             </div>
             <p className="text-sm md:text-base mb-8 leading-relaxed max-w-xl" style={{ color: theme === "dark" ? "#94a3b8" : "#475569" }}>
               {bio?.subtitle ?? "Crafting interactive web experiences while exploring the limitless possibilities of Data Science and Artificial Intelligence."}
@@ -647,8 +648,8 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             {[
-              { num: "3+", label: "Technologies" },
-              { num: "1st", label: "Year University" },
+              { num: "13+", label: "Technologies" },
+              { num: "2nd", label: "Year University" },
               { num: "2", label: "Certifications" },
               { num: "∞", label: "Curiosity" },
             ].map((stat) => (
@@ -830,9 +831,20 @@ export default function HomePage() {
                     borderBottom: `1px solid ${border}`,
                   }}
                 >
-                  <div style={{ fontFamily: "Orbitron, sans-serif", color: catColor, opacity: 0.3, fontSize: "3rem", fontWeight: 900 }}>
-                    {category === "Data Science" ? "📊" : category === "Tool" ? "🔧" : "🌐"}
-                  </div>
+                  {project.imageUrl ? (
+                                <img
+                                                  src={project.imageUrl}
+                                                  alt={project.title}
+                                                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                                                  onError={(e) => {
+                                                                      (e.target as HTMLImageElement).style.display = "none";
+                                                  }}
+                                                />
+                              ) : (
+                                <div style={{ fontFamily: "Orbitron, sans-serif", color: catColor, opacity: 0.3, fontSize: "3rem", fontWeight: 900 }}>
+                                  {category === "Data Science" ? "📊" : category === "Tool" ? "🔧" : "🌐"}
+                                </div>
+                              )}
                   {/* Status badge */}
                   <span
                     className="absolute top-3 right-3 text-xs px-2 py-0.5 rounded-full"
@@ -1054,7 +1066,7 @@ export default function HomePage() {
             <div className="p-6 grid md:grid-cols-3 gap-4" style={{ background: card }}>
               {[
                 { title: "Education", icon: "🎓", items: ["BS Data Science — Dawood University", "Intermediate — Forman College", "Matric (CS) — St. Paul's"] },
-                { title: "Key Skills", icon: "⚡", items: ["HTML, CSS, JavaScript", "Python, C, C++, Java", "Data Science Basics"] },
+                { title: "Key Skills", icon: "⚡", items: ["Python, JavaScript, C++", "React, FastAPI, Tailwind CSS", "scikit-learn, XGBoost, Deep Learning"] },
                 { title: "Certifications", icon: "🏆", items: ["HTML/CSS/JS — LumaByte", "Networking — Cisco/Saylani"] },
               ].map((section) => (
                 <div key={section.title}>
@@ -1073,7 +1085,7 @@ export default function HomePage() {
             {/* Download actions */}
             <div className="px-6 pb-6 flex flex-wrap gap-3 items-center" style={{ background: card }}>
               <a
-                href="/api/cv"
+                href={bio?.cvUrl || "/api/cv"}
                 download="Muhammad_Huzaifa_Shamsi_CV.pdf"
                 onClick={handleCvDownload}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300"
@@ -1085,7 +1097,7 @@ export default function HomePage() {
                 {isUrdu ? "سی وی ڈاؤن لوڈ کریں" : "Download CV (PDF)"}
               </a>
               <span className="text-xs" style={{ color: theme === "dark" ? "#475569" : "#94a3b8", fontFamily: "JetBrains Mono, monospace" }}>
-                Last updated: January 2026
+                Last updated: September 2026
               </span>
             </div>
           </motion.div>
@@ -1128,7 +1140,7 @@ export default function HomePage() {
           />
         </div>
         <p className="text-center text-sm mt-3" style={{ color: theme === "dark" ? "#64748b" : "#94a3b8", fontFamily: "JetBrains Mono, monospace" }}>
-          📍 Gulshan-e-Maymar, Sector X-3, Karachi, Pakistan
+          📍 Karachi, Pakistan
         </p>
       </SectionWrapper>
 

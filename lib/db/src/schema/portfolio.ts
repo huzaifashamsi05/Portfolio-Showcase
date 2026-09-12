@@ -42,6 +42,7 @@ export const projectsTable = pgTable("projects", {
   techUsed: text("tech_used").notNull(),
   liveUrl: text("live_url"),
   githubUrl: text("github_url"),
+  imageUrl: text("image_url"),
   status: text("status").notNull().default("coming_soon"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
