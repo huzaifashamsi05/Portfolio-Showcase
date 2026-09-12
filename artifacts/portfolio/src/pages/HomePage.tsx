@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import {
   useGetBio, useGetSkills, useGetProjects, useGetCertifications,
   useGetSocial, useTrackPageView, useTrackCvDownload, useSubmitContact,
-  useGetTestimonials,
 } from "@workspace/api-client-react";
 import { useTheme } from "@/hooks/use-theme";
 import { Loader } from "@/components/Loader";
@@ -235,16 +234,6 @@ function AnimatedCounter({ target, suffix }: { target: number; suffix: string })
   );
 }
 
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <span key={star} style={{ color: star <= rating ? "#f59e0b" : "#334155", fontSize: "1rem" }}>★</span>
-      ))}
-    </div>
-  );
-}
-
 const PROJECT_CATEGORIES: Record<string, string> = {
   "Portfolio Website": "Web",
   "Data Analysis Dashboard": "Data Science",
@@ -268,7 +257,6 @@ export default function HomePage() {
   const { data: projects } = useGetProjects();
   const { data: certifications } = useGetCertifications();
   const { data: social } = useGetSocial();
-  const { data: testimonials } = useGetTestimonials();
 
   const trackPageView = useTrackPageView();
   const trackCvDownload = useTrackCvDownload();
@@ -355,8 +343,6 @@ export default function HomePage() {
   const fg = theme === "dark" ? "#e2e8f0" : "#1e293b";
   const card = theme === "dark" ? "#0d1426" : "#ffffff";
   const border = theme === "dark" ? "#1e293b" : "#e2e8f0";
-
-  const displayTestimonials = testimonials ?? [];
 
   return (
     <div style={{ background: bg, color: fg, minHeight: "100vh" }} dir={isUrdu ? "rtl" : "ltr"}>
@@ -925,49 +911,6 @@ export default function HomePage() {
         </div>
       </SectionWrapper>
 
-      {/* TESTIMONIALS */}
-      <SectionWrapper id="testimonials">
-        <SectionTitle>{isUrdu ? "تاثرات" : "Testimonials"}</SectionTitle>
-        <div className="grid md:grid-cols-3 gap-6">
-          {displayTestimonials.map((t, i) => (
-            <motion.div
-              key={t.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.12, duration: 0.5 }}
-              className="p-6 rounded-xl relative"
-              style={{ background: card, border: `1px solid ${border}` }}
-            >
-              <div
-                className="absolute -top-3 left-6 text-4xl leading-none"
-                style={{ color: "#00f5ff44", fontFamily: "Georgia, serif" }}
-              >
-                "
-              </div>
-              <div className="mb-3">
-                <StarRating rating={t.rating} />
-              </div>
-              <p className="text-sm mb-5 leading-relaxed whitespace-pre-wrap" style={{ color: theme === "dark" ? "#94a3b8" : "#475569", fontStyle: "italic" }}>
-                "{t.quote}"
-              </p>
-              <div className="flex items-center gap-3 pt-4" style={{ borderTop: `1px solid ${border}` }}>
-                <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-                  style={{ background: "linear-gradient(135deg, #00f5ff33, #8b5cf633)", color: "#00f5ff", border: "1px solid #00f5ff44" }}
-                >
-                  {t.name.charAt(0)}
-                </div>
-                <div>
-                  <div className="font-bold text-sm" style={{ fontFamily: "Space Grotesk, sans-serif" }}>{t.name}</div>
-                  <div className="text-xs" style={{ color: "#8b5cf6" }}>{t.role}</div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </SectionWrapper>
-
       {/* SERVICES */}
       <SectionWrapper id="services">
         <SectionTitle>{isUrdu ? "خدمات" : "Services"}</SectionTitle>
@@ -1307,15 +1250,6 @@ export default function HomePage() {
                     → {l.label}
                   </button>
                 ))}
-                <button
-                  onClick={() => scrollTo("#testimonials")}
-                  className="text-left text-xs py-1 transition-colors duration-200"
-                  style={{ color: theme === "dark" ? "#475569" : "#94a3b8", background: "none", border: "none", cursor: "pointer", fontFamily: "Space Grotesk, sans-serif" }}
-                  onMouseEnter={(e) => ((e.target as HTMLButtonElement).style.color = "#00f5ff")}
-                  onMouseLeave={(e) => ((e.target as HTMLButtonElement).style.color = theme === "dark" ? "#475569" : "#94a3b8")}
-                >
-                  → Testimonials
-                </button>
                 <button
                   onClick={() => scrollTo("#cv")}
                   className="text-left text-xs py-1 transition-colors duration-200"
