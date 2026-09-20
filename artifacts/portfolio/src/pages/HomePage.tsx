@@ -7,8 +7,10 @@ import {
   useGetSocial, useTrackPageView, useTrackCvDownload, useSubmitContact,
 } from "@workspace/api-client-react";
 import { useTheme } from "@/hooks/use-theme";
+import { useLenis } from "@/hooks/use-lenis";
 import { Loader } from "@/components/Loader";
 import { Cursor } from "@/components/Cursor";
+import { KineticHero } from "@/components/KineticHero";
 import profileImg from "@assets/image_1777787685666.png";
 import certWebdev from "@assets/Certificate_-_front_development_1777787667060.png";
 import certNetworking from "@assets/Basic_Networking_certificate__1777787667056.png";
@@ -242,6 +244,7 @@ const PROJECT_CATEGORIES: Record<string, string> = {
 };
 
 export default function HomePage() {
+  useLenis();
   const [loaded, setLoaded] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [activeSection, setActiveSection] = useState("hero");
@@ -507,11 +510,11 @@ export default function HomePage() {
             <p className="text-xs uppercase tracking-widest mb-3" style={{ color: "#00f5ff", fontFamily: "JetBrains Mono, monospace" }}>
               {isUrdu ? "< ہیلو ورلڈ />" : "<hello world />"}
             </p>
-            <h1
-              className="text-4xl md:text-6xl font-black mb-4 leading-tight"
-              style={{ fontFamily: "Orbitron, sans-serif", background: "linear-gradient(135deg, #e2e8f0 0%, #00f5ff 50%, #8b5cf6 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
-            >
-              {bio?.name ?? "Muhammad Huzaifa Shamsi"}
+            <h1 className="text-4xl md:text-6xl font-black mb-4 leading-tight">
+              <KineticHero
+                text={bio?.name ?? "Muhammad Huzaifa Shamsi"}
+                style={{ fontFamily: "Orbitron, sans-serif", background: "linear-gradient(135deg, #e2e8f0 0%, #00f5ff 50%, #8b5cf6 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
+              />
             </h1>
             <div className="mb-4 text-lg" style={{ minHeight: "2rem" }}>
               <Typewriter isUrdu={isUrdu} roles={bio?.tagline ? bio.tagline.split("|").map((s) => s.trim()) : undefined} />
