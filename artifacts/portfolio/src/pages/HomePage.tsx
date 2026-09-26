@@ -650,7 +650,7 @@ export default function HomePage() {
             {[
               { num: "13+", label: "Technologies" },
               { num: "2nd", label: "Year University" },
-              { num: "2", label: "Certifications" },
+              { num: `${(certifications ?? []).length || 3}`, label: "Certifications" },
               { num: "∞", label: "Curiosity" },
             ].map((stat) => (
               <div
@@ -1067,7 +1067,7 @@ export default function HomePage() {
               {[
                 { title: "Education", icon: "🎓", items: ["BS Data Science — Dawood University", "Intermediate — Forman College", "Matric (CS) — St. Paul's"] },
                 { title: "Key Skills", icon: "⚡", items: ["Python, JavaScript, C++", "React, FastAPI, Tailwind CSS", "scikit-learn, XGBoost, Deep Learning"] },
-                { title: "Certifications", icon: "🏆", items: ["HTML/CSS/JS — LumaByte", "Networking — Cisco/Saylani"] },
+                { title: "Certifications", icon: "🏆", items: (certifications ?? []).length ? certifications!.map((c) => `${c.title} — ${c.organization}`) : ["HTML/CSS/JS — LumaByte", "Networking — Cisco/Saylani"] },
               ].map((section) => (
                 <div key={section.title}>
                   <h4 className="text-xs font-bold mb-2 flex items-center gap-1.5" style={{ color: "#00f5ff", fontFamily: "Space Grotesk, sans-serif" }}>
